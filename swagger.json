@@ -1,0 +1,230 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fantasy Premier League Fixtures API",
+    "description": "API service for tracking FPL game records and fixtures",
+    "version": "1.0.0",
+    "contact": {
+      "name": "FPL Fixtures Service"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "API Information",
+        "description": "Get basic information about the API and available endpoints",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Fantasy Premier League Fixtures, API Service",
+                  "version": "1.0.0",
+                  "endpoints": {
+                    "fixtures": "/api/fixtures",
+                    "fixturesByEvent": "/api/fixtures/event/:eventId"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fixtures": {
+      "get": {
+        "summary": "Get All Fixtures",
+        "description": "Retrieve all FPL fixtures with their codes, kickoff times, and team information",
+        "responses": {
+          "200": {
+            "description": "Successful response with fixtures data",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "count": 380,
+                  "data": [
+                    {
+                      "code": 1,
+                      "kickoff_time": "2024-01-15T15:00:00Z",
+                      "day": "Monday, 15 January 2024",
+                      "time": "15:00",
+                      "home_team": 1,
+                      "away_team": 2,
+                      "home_team_name": "Arsenal",
+                      "away_team_name": "Chelsea",
+                      "finished": false,
+                      "event": 21
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Failed to fetch fixtures",
+                  "error": "Error message details"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fixtures/event/{eventId}": {
+      "get": {
+        "summary": "Get Fixtures by Event",
+        "description": "Retrieve fixtures for a specific gameweek/event",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "description": "The gameweek/event ID",
+            "schema": {
+              "type": "integer",
+              "example": 21
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with filtered fixtures",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "count": 10,
+                  "data": [
+                    {
+                      "code": 1,
+                      "kickoff_time": "2024-01-15T15:00:00Z",
+                      "day": "Monday, 15 January 2024",
+                      "time": "15:00",
+                      "home_team": 1,
+                      "away_team": 2,
+                      "home_team_name": "Arsenal",
+                      "away_team_name": "Chelsea",
+                      "finished": false,
+                      "event": 21
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Failed to fetch fixtures by event",
+                  "error": "Error message details"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Fixture": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Unique fixture code"
+          },
+          "kickoff_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Original kickoff time from FPL API"
+          },
+          "day": {
+            "type": "string",
+            "description": "Formatted day string"
+          },
+          "time": {
+            "type": "string",
+            "description": "Formatted time string (24-hour format)"
+          },
+          "home_team": {
+            "type": "integer",
+            "description": "Home team ID"
+          },
+          "away_team": {
+            "type": "integer",
+            "description": "Away team ID"
+          },
+          "home_team_name": {
+            "type": "string",
+            "description": "Home team name"
+          },
+          "away_team_name": {
+            "type": "string",
+            "description": "Away team name"
+          },
+          "finished": {
+            "type": "boolean",
+            "description": "Whether the fixture has finished"
+          },
+          "event": {
+            "type": "integer",
+            "description": "Gameweek/event number"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of fixtures returned"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fixture"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "error": {
+            "type": "string",
+            "description": "Detailed error information"
+          }
+        }
+      }
+    }
+  }
+}
