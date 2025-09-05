@@ -186,6 +186,17 @@ curl -X DELETE http://localhost:5000/api/cache/clear
 }
 ```
 
+env variables
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=fpl_fixtures
+DB_USER=postgres
+DB_PASSWORD=password
+
+
+PORT=5000
+
 ## Error Handling
 
 The API includes comprehensive error handling with meaningful error messages and proper HTTP status codes.
